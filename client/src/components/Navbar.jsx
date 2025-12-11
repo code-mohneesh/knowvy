@@ -22,6 +22,7 @@ const Navbar = () => {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+                <Link to="/chat" className="hover:text-neon-green transition-colors">Chat</Link>
                 <Link to="/" className="hover:text-neon-green transition-colors">Home</Link>
                 <Link to="/hackathons" className="hover:text-neon-blue transition-colors">Hackathons</Link>
                 <Link to="/sessions" className="hover:text-neon-pink transition-colors">Sessions</Link>

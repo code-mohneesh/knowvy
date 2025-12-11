@@ -22,6 +22,8 @@ import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
 import MyEvents from './pages/MyEvents';
 
+import Chat from './components/Chat';
+
 function App() {
   return (
     <AuthProvider>
@@ -35,6 +37,7 @@ function App() {
           <div className="relative z-10 px-4 py-8 max-w-7xl mx-auto flex-grow w-full">
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/chat" element={<Chat />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/hackathons" element={<Hackathons />} />
