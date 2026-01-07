@@ -212,18 +212,28 @@ const AdminApprovals = () => {
                                 <div className="flex items-center gap-6">
                                     <div className="w-16 h-16 rounded-full border-2 border-neon-green p-0.5">
                                         <img
-                                            src={pUser.avatar || "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"}
+                                            src={pUser.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(pUser.name)}&size=128&background=39ff14&color=000&bold=true`}
                                             alt={pUser.name}
                                             className="w-full h-full object-cover rounded-full"
+                                            onError={(e) => {
+                                                e.target.src = 'https://ui-avatars.com/api/?name=User&size=128&background=39ff14&color=000&bold=true';
+                                            }}
                                         />
                                     </div>
                                     <div className="flex-1">
                                         <h3 className="text-xl font-bold">{pUser.name}</h3>
                                         <p className="text-gray-400">{pUser.email}</p>
                                         <div className="flex gap-2 mt-2">
-                                            <span className="px-3 py-1 bg-white/5 rounded-full text-xs text-neon-green border border-neon-green/20 capitalize">
-                                                {pUser.role}
-                                            </span>
+                                            {pUser.role === 'mentor' && (
+                                                <span className="px-3 py-1 bg-purple-500/20 rounded-full text-xs text-purple-400 border border-purple-500/30 flex items-center gap-1">
+                                                    👨‍🏫 Mentor Account
+                                                </span>
+                                            )}
+                                            {pUser.role === 'organization' && (
+                                                <span className="px-3 py-1 bg-blue-500/20 rounded-full text-xs text-blue-400 border border-blue-500/30 flex items-center gap-1">
+                                                    🏢 Organization Account
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="flex gap-3">

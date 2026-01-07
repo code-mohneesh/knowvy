@@ -64,3 +64,24 @@ export const rejectUser = asyncHandler(async (req, res) => {
         throw new Error('User not found');
     }
 });
+
+// @desc    Get admin user information for public display
+// @route   GET /api/admin/info
+// @access  Public
+export const getAdminInfo = asyncHandler(async (req, res) => {
+    // Find the first admin user
+    const admin = await User.findOne({ role: 'admin' }).select('-password');
+
+    if (!admin) {
+        res.status(404);
+        throw new Error('Admin not found');
+    }
+
+    // Return admin public information
+    res.json({
+        name: admin.name,
+        email: admin.email,
+        avatar: admin.avatar || null,
+        role: 'Platform Admin & Founder'
+    });
+});

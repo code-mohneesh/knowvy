@@ -5,6 +5,9 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import VoiceInterview from "../pages/VoiceInterview";
+import AIAssistant from "../pages/AIAssistant";
+import Feedback from "../pages/Feedback";
+import AboutAdmin from "../pages/AboutAdmin";
 
 import Hackathons from "../pages/Hackathons";
 import AddHackathon from "../pages/AddHackathon";
@@ -39,8 +42,11 @@ export default function AppRoutes() {
       <Route path="/signup" element={<Signup />} />
 
       {/* AI FEATURES */}
+      <Route path="/ai" element={<AIAssistant />} />
       <Route path="/chat" element={<Chat />} />
       <Route path="/voice-interview" element={<VoiceInterview />} />
+      <Route path="/feedback" element={<Feedback />} />
+      <Route path="/about-admin" element={<AboutAdmin />} />
 
       {/* HACKATHONS */}
       <Route path="/hackathons" element={<Hackathons />} />

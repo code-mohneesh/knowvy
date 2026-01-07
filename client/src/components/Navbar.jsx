@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';
-import { Menu, X, User, LogOut, Bell } from 'lucide-react';
+import { Menu, X, User, LogOut, Bell, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const NotificationDropdown = ({ notifications, onMarkRead }) => {
@@ -114,9 +114,10 @@ const Navbar = () => {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
-                <Link to="/voice-interview" className="hover:text-neon-green transition-colors">voice</Link>
-                <Link to="/chat" className="hover:text-neon-green transition-colors">Chat</Link>
-                <Link to="/" className="hover:text-neon-green transition-colors">Home</Link>
+                <Link to="/ai" className="flex items-center gap-1 hover:text-neon-purple transition-colors">
+                    <Sparkles size={18} />
+                    AI Assistant
+                </Link>
                 <Link to="/hackathons" className="hover:text-neon-blue transition-colors">Hackathons</Link>
                 <Link to="/sessions" className="hover:text-neon-pink transition-colors">Sessions</Link>
                 <Link to="/mentorship" className="hover:text-neon-purple transition-colors">Mentorship</Link>

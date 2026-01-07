@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { FiSend, FiArrowDown, FiLoader } from "react-icons/fi";
+import { FiSend, FiArrowDown, FiLoader, FiStopCircle } from "react-icons/fi";
 
 export default function Chat() {
   const [input, setInput] = useState("");
@@ -11,6 +11,7 @@ export default function Chat() {
   const [loading, setLoading] = useState(false);
   const [streaming, setStreaming] = useState(false);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
+  const abortControllerRef = useRef(null);
 
   const messagesRef = useRef(null);
 
@@ -51,11 +52,15 @@ export default function Chat() {
 
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
+    // Create abort controller for this request
+    abortControllerRef.current = new AbortController();
+
     try {
       const res = await fetch("http://localhost:5000/api/ai/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: newMessages }),
+        signal: abortControllerRef.current.signal
       });
 
       const reader = res.body.getReader();
@@ -84,20 +89,38 @@ export default function Chat() {
                 return updated;
               });
             }
-          } catch {}
+          } catch { }
         }
       }
 
       setStreaming(false);
       setLoading(false);
+      abortControllerRef.current = null;
     } catch (err) {
-      console.error("Stream error:", err);
-      setMessages((prev) => {
-        const updated = [...prev];
-        updated[updated.length - 1].content =
-          "⚠️ Error: Streaming failed.";
-        return updated;
-      });
+      if (err.name === 'AbortError') {
+        setMessages((prev) => {
+          const updated = [...prev];
+          updated[updated.length - 1].content += "\n\n*[Streaming stopped by user]*";
+          return updated;
+        });
+      } else {
+        console.error("Stream error:", err);
+        setMessages((prev) => {
+          const updated = [...prev];
+          updated[updated.length - 1].content =
+            "⚠️ Error: Streaming failed.";
+          return updated;
+        });
+      }
+      setStreaming(false);
+      setLoading(false);
+    }
+  };
+
+  const handleStop = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
       setStreaming(false);
       setLoading(false);
     }
@@ -138,17 +161,29 @@ export default function Chat() {
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            onKeyDown={(e) => e.key === "Enter" && !streaming && handleSend()}
             placeholder="Ask something..."
             className="flex-1 bg-transparent text-white outline-none"
+            disabled={streaming}
           />
-          <button
-            disabled={loading}
-            onClick={handleSend}
-            className="p-2 hover:bg-neutral-700 rounded-lg disabled:opacity-50"
-          >
-            <FiSend size={20} />
-          </button>
+          {streaming ? (
+            <button
+              onClick={handleStop}
+              className="p-2 hover:bg-red-700 bg-red-600 rounded-lg transition-colors flex items-center gap-2"
+              title="Stop streaming"
+            >
+              <FiStopCircle size={20} />
+              <span className="text-sm">Stop</span>
+            </button>
+          ) : (
+            <button
+              disabled={loading}
+              onClick={handleSend}
+              className="p-2 hover:bg-neutral-700 rounded-lg disabled:opacity-50"
+            >
+              <FiSend size={20} />
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -162,11 +197,10 @@ function ChatBubble({ role, text }) {
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div
-        className={`max-w-[80%] p-4 rounded-2xl shadow-lg ${
-          isUser
-            ? "bg-blue-600 text-white"
-            : "bg-neutral-800 text-gray-200 border border-neutral-700"
-        }`}
+        className={`max-w-[80%] p-4 rounded-2xl shadow-lg ${isUser
+          ? "bg-blue-600 text-white"
+          : "bg-neutral-800 text-gray-200 border border-neutral-700"
+          }`}
       >
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}

@@ -12,7 +12,24 @@ const getMentors = asyncHandler(async (req, res) => {
         isApproved: true
     }).select('-password');
 
-    res.json(mentors);
+    // Fetch and attach mentor profile data for each mentor
+    const mentorsWithProfiles = await Promise.all(
+        mentors.map(async (mentor) => {
+            const profile = await MentorProfile.findOne({ user: mentor._id });
+            return {
+                ...mentor.toObject(),
+                bio: profile?.bio || '',
+                occupation: profile?.occupation || '',
+                company: profile?.company || '',
+                experience: profile?.experience || 0,
+                expertise: profile?.expertise || [],
+                specialty: profile?.specialty || '',
+                skills: profile?.skills || []
+            };
+        })
+    );
+
+    res.json(mentorsWithProfiles);
 });
 
 // @desc    Get single mentor by User ID

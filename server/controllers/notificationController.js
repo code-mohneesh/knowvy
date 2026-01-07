@@ -5,6 +5,10 @@ import Notification from '../models/Notification.js';
 // @route   GET /api/notifications
 // @access  Private
 export const getNotifications = asyncHandler(async (req, res) => {
+    // Auto-delete notifications older than 1 day
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    await Notification.deleteMany({ createdAt: { $lt: oneDayAgo } });
+
     const notifications = await Notification.find({ recipient: req.user._id })
         .sort({ createdAt: -1 })
         .limit(20);

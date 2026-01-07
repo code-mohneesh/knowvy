@@ -21,6 +21,7 @@ import adminRoutes from './routes/adminRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import mentorshipRoutes from './routes/mentorshipRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
+import feedbackRoutes from './routes/feedbackRoutes.js';
 
 dotenv.config();
 connectDB();
@@ -67,6 +68,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/mentorship', mentorshipRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 /* ======================
    ROOT ROUTE

@@ -1,12 +1,16 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Code, Calendar, Users, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useContext } from 'react';
+import AuthContext from '../context/AuthContext';
+
 
 const Home = () => {
+    const { user } = useContext(AuthContext);
     return (
         <div className="flex flex-col gap-20">
             {/* Hero Section */}
-            <section className="relative flex flex-col items-center text-center pt-20 pb-10 gap-6">
+            <section className="relative flex flex-col items-center text-center pt-20 pb-10 gap-6 z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -20,17 +24,28 @@ const Home = () => {
                     Ignite Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-green via-neon-blue to-neon-purple">Tech Journey</span>.
                 </h1>
 
-                <p className="text-xl text-gray-400 max-w-2xl font-light leading-relaxed">
+                <p className="text-xl text-white/90 max-w-2xl font-light leading-relaxed">
                     Join the fastest-growing community for hackathons, workshops, and peer mentorship. Build, learn, and grow with thousands of student developers.
                 </p>
 
-                <div className="flex gap-4 mt-8">
+                <div className="flex flex-col md:flex-row gap-4 mt-8">
                     <Link to="/hackathons" className="neon-button neon-button-primary flex items-center gap-2">
                         Explore Hackathons <ArrowRight size={18} />
                     </Link>
-                    <Link to="/signup" className="neon-button neon-button-secondary">
-                        Join Community
-                    </Link>
+                    {user ? (
+                        <a
+                            href="https://chat.whatsapp.com/JUFnHeZ35kz1zXPAwknbKH"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="neon-button neon-button-secondary"
+                        >
+                            Join Community
+                        </a>
+                    ) : (
+                        <Link to="/signup" className="neon-button neon-button-secondary">
+                            Join Community
+                        </Link>
+                    )}
                 </div>
             </section>
 

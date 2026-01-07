@@ -1,30 +1,55 @@
-let currentAudio = null;
+let synth = null;
+let currentUtterance = null;
+
+// Initialize on browser
+if (typeof window !== 'undefined') {
+  synth = window.speechSynthesis;
+}
 
 /**
- * Play ElevenLabs voice
+ * Speak using browser's built-in TTS (no API needed)
  */
 export async function speak(text) {
   try {
     stopSpeaking();
 
-    const res = await fetch("http://localhost:5000/api/tts/speak", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
-    });
+    if (!synth) {
+      console.error("Speech synthesis not available");
+      return;
+    }
 
-    if (!res.ok) throw new Error("TTS failed");
+    // Create new utterance
+    currentUtterance = new SpeechSynthesisUtterance(text);
 
-    const audioBlob = await res.blob();
-    const audioUrl = URL.createObjectURL(audioBlob);
+    // Settings for better voice
+    currentUtterance.rate = 0.95;     // Slightly slower for clarity
+    currentUtterance.pitch = 1.0;     // Normal pitch
+    currentUtterance.volume = 1.0;    // Full volume
+    currentUtterance.lang = 'en-US';  // English US
 
-    currentAudio = new Audio(audioUrl);
-    currentAudio.play();
+    // Try to get a good voice
+    const voices = synth.getVoices();
+    if (voices.length > 0) {
+      // Prefer Google or Microsoft voices if available
+      const goodVoice = voices.find(v =>
+        v.lang.includes('en') && (v.name.includes('Google') || v.name.includes('Microsoft'))
+      ) || voices.find(v => v.lang.includes('en')) || voices[0];
 
-    currentAudio.onended = () => {
-      URL.revokeObjectURL(audioUrl);
-      currentAudio = null;
+      currentUtterance.voice = goodVoice;
+    }
+
+    // Cleanup when done
+    currentUtterance.onend = () => {
+      currentUtterance = null;
     };
+
+    currentUtterance.onerror = (err) => {
+      console.error("Speech error:", err);
+      currentUtterance = null;
+    };
+
+    // Start speaking
+    synth.speak(currentUtterance);
   } catch (err) {
     console.error("Voice output error:", err);
   }
@@ -34,10 +59,9 @@ export async function speak(text) {
  * Force stop AI speaking
  */
 export function stopSpeaking() {
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
-    currentAudio = null;
+  if (synth) {
+    synth.cancel();
+    currentUtterance = null;
   }
 }
 
@@ -45,5 +69,5 @@ export function stopSpeaking() {
  * Check if AI is speaking
  */
 export function isSpeaking() {
-  return !!currentAudio;
+  return synth && synth.speaking;
 }

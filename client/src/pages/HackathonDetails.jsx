@@ -90,10 +90,6 @@ const HackathonDetails = () => {
                                 <span className="font-bold">{hackathon.location}</span>
                             </div>
                             <div className="flex items-center justify-between text-gray-300">
-                                <span className="flex items-center gap-2"><User size={18} className="text-gray-500" /> Team Size</span>
-                                <span className="font-bold">1 - 4 Members</span>
-                            </div>
-                            <div className="flex items-center justify-between text-gray-300">
                                 <span className="flex items-center gap-2"><Globe size={18} className="text-gray-500" /> Entry Fee</span>
                                 <span className="font-bold text-neon-green">{hackathon.entryFee === 0 ? 'Free' : `$${hackathon.entryFee}`}</span>
                             </div>
