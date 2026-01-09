@@ -27,8 +27,8 @@ const MyEvents = () => {
 
             // Fetch user's own events (both approved and pending)
             const [hackathonsRes, sessionsRes] = await Promise.all([
-                axios.get('http://localhost:5000/api/hackathons/user/my', config),
-                axios.get('http://localhost:5000/api/sessions/user/my', config)
+                axios.get(`${import.meta.env.VITE_SERVER_URL}/api/hackathons/user/my`, config),
+                axios.get(`${import.meta.env.VITE_SERVER_URL}/api/sessions/user/my`, config)
             ]);
 
             setMyHackathons(hackathonsRes.data);

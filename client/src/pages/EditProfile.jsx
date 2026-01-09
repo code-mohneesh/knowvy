@@ -106,7 +106,7 @@ const EditProfile = () => {
             }
 
             const { data } = await axios.put(
-                'http://localhost:5000/api/profile',
+                `${import.meta.env.VITE_SERVER_URL}/api/profile`,
                 updateData,
                 config
             );

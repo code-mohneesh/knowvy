@@ -11,7 +11,7 @@ const Sessions = () => {
 
     useEffect(() => {
         const fetchSessions = async () => {
-            const { data } = await axios.get('http://localhost:5000/api/sessions');
+            const { data } = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/sessions`);
             setSessions(data);
         };
         fetchSessions();

@@ -11,7 +11,7 @@ const Mentorship = () => {
 
     useEffect(() => {
         const fetchMentors = async () => {
-            const { data } = await axios.get('http://localhost:5000/api/mentors');
+            const { data } = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/mentors`);
             setMentors(data);
             setLoading(false);
         };

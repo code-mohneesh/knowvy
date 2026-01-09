@@ -17,7 +17,7 @@ const Hackathons = () => {
 
     useEffect(() => {
         const fetchHackathons = async () => {
-            const { data } = await axios.get('http://localhost:5000/api/hackathons');
+            const { data } = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/hackathons`);
             setHackathons(data);
             setLoading(false);
         };

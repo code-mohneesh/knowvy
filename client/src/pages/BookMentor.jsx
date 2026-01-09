@@ -24,7 +24,7 @@ const BookMentor = () => {
     useEffect(() => {
         const fetchMentor = async () => {
             try {
-                const { data } = await axios.get(`http://localhost:5000/api/mentors/${id}`);
+                const { data } = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/mentors/${id}`);
                 setMentor(data);
                 setLoading(false);
             } catch (error) {
@@ -57,7 +57,7 @@ const BookMentor = () => {
                 }
             };
 
-            await axios.post('http://localhost:5000/api/mentorship', {
+            await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/mentorship`, {
                 mentorId: id,
                 type: bookingType,
                 subject: formData.subject,

@@ -21,7 +21,7 @@ const MentorRequests = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` }
             };
-            const { data } = await axios.get('http://localhost:5000/api/mentorship/my-requests', config);
+            const { data } = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/mentorship/my-requests`, config);
             setRequests(data);
             setLoading(false);
         } catch (error) {
@@ -37,7 +37,7 @@ const MentorRequests = () => {
                 headers: { Authorization: `Bearer ${user.token}` }
             };
 
-            await axios.put(`http://localhost:5000/api/mentorship/${requestId}`, {
+            await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/mentorship/${requestId}`, {
                 status: 'accepted'
             }, config);
 
@@ -55,7 +55,7 @@ const MentorRequests = () => {
                     headers: { Authorization: `Bearer ${user.token}` }
                 };
 
-                await axios.put(`http://localhost:5000/api/mentorship/${requestId}`, {
+                await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/mentorship/${requestId}`, {
                     status: 'rejected',
                     notes: 'Request declined by mentor'
                 }, config);
@@ -75,7 +75,7 @@ const MentorRequests = () => {
                     headers: { Authorization: `Bearer ${user.token}` }
                 };
 
-                await axios.put(`http://localhost:5000/api/mentorship/${requestId}`, {
+                await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/mentorship/${requestId}`, {
                     status: 'completed'
                 }, config);
 

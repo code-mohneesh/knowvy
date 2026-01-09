@@ -62,7 +62,7 @@ const AddHackathon = () => {
 
             console.log('Submitting hackathon:', hackathonData);
 
-            const response = await axios.post('http://localhost:5000/api/hackathons', hackathonData, config);
+            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/hackathons`, hackathonData, config);
 
             console.log('Hackathon created:', response.data);
             toast.success('Hackathon submitted successfully! It will be visible once approved by the admin.');

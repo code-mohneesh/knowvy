@@ -24,7 +24,7 @@ export default function VoiceInterview() {
     ];
 
     try {
-      const res = await fetch("http://localhost:5000/api/ai/chat", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/ai/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages }),

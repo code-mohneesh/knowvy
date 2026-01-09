@@ -24,7 +24,7 @@ const StudentRequests = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` }
             };
-            const { data } = await axios.get('http://localhost:5000/api/mentorship/my-requests', config);
+            const { data } = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/mentorship/my-requests`, config);
             setRequests(data);
             setLoading(false);
         } catch (error) {

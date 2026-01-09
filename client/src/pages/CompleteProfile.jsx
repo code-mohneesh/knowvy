@@ -91,7 +91,7 @@ const CompleteProfile = () => {
             const token = user?.token || localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).token : null;
 
             const { data } = await axios.post(
-                "http://localhost:5000/api/profile/complete-profile",
+                `${import.meta.env.VITE_SERVER_URL}/api/profile/complete-profile`,
                 {
                     role,
                     name: formData.name, // Allow updating name

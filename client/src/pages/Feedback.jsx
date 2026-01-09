@@ -54,7 +54,7 @@ const Feedback = () => {
             // Save to database
             const config = user ? { headers: { Authorization: `Bearer ${user.token}` } } : {};
 
-            await axios.post('http://localhost:5000/api/feedback', {
+            await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/feedback`, {
                 name: user?.name || 'Anonymous',
                 email: user?.email || '',
                 rating,

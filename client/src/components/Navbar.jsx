@@ -58,7 +58,7 @@ const Navbar = () => {
         if (!user) return;
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            const { data } = await axios.get('http://localhost:5000/api/notifications', config);
+            const { data } = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/notifications`, config);
             setNotifications(data);
             setUnreadCount(data.filter(n => !n.read).length);
         } catch (error) {
@@ -91,12 +91,12 @@ const Navbar = () => {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
             if (id === 'all') {
-                await axios.put('http://localhost:5000/api/notifications/read-all', {}, config);
+                await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/notifications/read-all`, {}, config);
                 setNotifications(prev => prev.map(n => ({ ...n, read: true })));
                 setUnreadCount(0);
                 toast.success('All marked as read');
             } else {
-                await axios.put(`http://localhost:5000/api/notifications/${id}/read`, {}, config);
+                await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/notifications/${id}/read`, {}, config);
                 setNotifications(prev => prev.map(n => n._id === id ? ({ ...n, read: true }) : n));
                 setUnreadCount(prev => Math.max(0, prev - 1));
                 if (link) navigate(link);

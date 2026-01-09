@@ -60,7 +60,7 @@ const AddSession = () => {
         };
 
         try {
-            await axios.post('http://localhost:5000/api/sessions', {
+            await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/sessions`, {
                 title,
                 speakerName,
                 date,
