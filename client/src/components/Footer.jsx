@@ -17,9 +17,9 @@ const Footer = () => {
                 <div>
                     <h3 className="font-bold text-white mb-6">Platform</h3>
                     <ul className="space-y-3 text-sm text-gray-400">
-                        <li><a href="/hackathons" className="hover:text-neon-green transition-colors">Hackathons</a></li>
-                        <li><a href="/sessions" className="hover:text-neon-blue transition-colors">Sessions</a></li>
-                        <li><a href="/mentorship" className="hover:text-neon-pink transition-colors">Mentorship</a></li>
+                        <li><Link to="/hackathons" className="hover:text-neon-green transition-colors">Hackathons</Link></li>
+                        <li><Link to="/sessions" className="hover:text-neon-blue transition-colors">Sessions</Link></li>
+                        <li><Link to="/mentorship" className="hover:text-neon-pink transition-colors">Mentorship</Link></li>
                     </ul>
                 </div>
 
@@ -35,8 +35,8 @@ const Footer = () => {
                 <div>
                     <h3 className="font-bold text-white mb-6">Community</h3>
                     <ul className="space-y-3 text-sm text-gray-400">
-                        <li><a href="/feedback" className="hover:text-neon-green transition-colors">💬 Feedback</a></li>
-                        <li><a href="/about-admin" className="hover:text-neon-blue transition-colors">👤 Know About Admin</a></li>
+                        <li><Link to="/feedback" className="hover:text-neon-green transition-colors">💬 Feedback</Link></li>
+                        <li><Link to="/about-admin" className="hover:text-neon-blue transition-colors">👤 Know About Admin</Link></li>
                     </ul>
                     <br />
                     <div className="flex gap-4">

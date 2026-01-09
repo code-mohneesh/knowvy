@@ -154,6 +154,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
 
     // Update User common fields
     if (req.body.name) user.name = req.body.name;
+    if (req.body.avatar) user.avatar = req.body.avatar; // Sync avatar to Global User model
     // Password update should be handled separately or here if needed, but usually dedicated endpoint.
     // For now, allow name update.
     await user.save();

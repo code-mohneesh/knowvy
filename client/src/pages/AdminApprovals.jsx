@@ -6,18 +6,24 @@ import { CheckCircle, XCircle, Calendar, MapPin, User, Clock } from 'lucide-reac
 import toast from 'react-hot-toast';
 
 const AdminApprovals = () => {
-    const { user } = useContext(AuthContext);
+    const { user, loading: authLoading } = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState('hackathons');
     const [pendingHackathons, setPendingHackathons] = useState([]);
     const [pendingSessions, setPendingSessions] = useState([]);
     const [pendingUsers, setPendingUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [dataLoading, setDataLoading] = useState(true);
 
     useEffect(() => {
-        fetchPendingItems();
-    }, []);
+        if (!authLoading && user && user.userType === 'admin') {
+            fetchPendingItems();
+        } else if (!authLoading && (!user || user.userType !== 'admin')) {
+            setDataLoading(false); // Stop loading to show access denied
+        }
+    }, [authLoading, user]);
 
     const fetchPendingItems = async () => {
+        // ... (check existing code to verify I don't need to copy it all if I use replace carefully)
+        // I will replace the whole component start to ensure logic flow is correct.
         try {
             const config = {
                 headers: {
@@ -34,10 +40,10 @@ const AdminApprovals = () => {
             setPendingHackathons(hackathonsRes.data);
             setPendingSessions(sessionsRes.data);
             setPendingUsers(usersRes.data);
-            setLoading(false);
+            setDataLoading(false);
         } catch (error) {
             console.error('Error fetching pending items:', error);
-            setLoading(false);
+            setDataLoading(false);
         }
     };
 
@@ -77,6 +83,7 @@ const AdminApprovals = () => {
             toast.success('Hackathon approved successfully!');
             fetchPendingItems();
         } catch (error) {
+            console.error(error); // Log error for debugging
             toast.error('Error approving hackathon');
         }
     };
@@ -133,6 +140,10 @@ const AdminApprovals = () => {
         }
     };
 
+    if (authLoading || (user && user.userType === 'admin' && dataLoading)) {
+        return <div className="text-center mt-20 text-neon-purple">Loading pending approvals...</div>;
+    }
+
     if (!user || user.userType !== 'admin') {
         return (
             <div className="text-center mt-20">
@@ -142,10 +153,6 @@ const AdminApprovals = () => {
                 </div>
             </div>
         );
-    }
-
-    if (loading) {
-        return <div className="text-center mt-20 text-neon-purple">Loading pending approvals...</div>;
     }
 
     return (

@@ -57,6 +57,12 @@ export const sendMessage = asyncHandler(async (req, res) => {
 // @desc    Get chat messages for a mentorship request
 // @route   GET /api/chat/:requestId
 // @access  Private
+import StudentProfile from '../models/profiles/StudentProfile.js';
+import MentorProfile from '../models/profiles/MentorProfile.js';
+
+// @desc    Get chat messages for a mentorship request
+// @route   GET /api/chat/:requestId
+// @access  Private
 export const getMessages = asyncHandler(async (req, res) => {
     const { requestId } = req.params;
 
@@ -83,6 +89,27 @@ export const getMessages = asyncHandler(async (req, res) => {
         .populate('receiver', 'name avatar')
         .sort({ createdAt: 1 });
 
+    // Patch avatars (Backwards compatibility)
+    const messagesWithAvatars = await Promise.all(messages.map(async (msg) => {
+        const m = msg.toObject();
+
+        // Patch Sender
+        if (m.sender && !m.sender.avatar) {
+            // Try to determine role? Or just try both. Or use mentorshipRequest roles.
+            // Sender is either student or mentor
+            if (m.sender._id.toString() === mentorshipRequest.student.toString()) {
+                const p = await StudentProfile.findOne({ user: m.sender._id });
+                if (p?.avatar) m.sender.avatar = p.avatar;
+            } else {
+                const p = await MentorProfile.findOne({ user: m.sender._id });
+                if (p?.avatar) m.sender.avatar = p.avatar;
+            }
+        }
+
+        // Patch Receiver (if needed, usually only sender is shown in bubbles)
+        return m;
+    }));
+
     // Mark messages as read for current user
     await ChatMessage.updateMany(
         {
@@ -93,7 +120,7 @@ export const getMessages = asyncHandler(async (req, res) => {
         { read: true }
     );
 
-    res.json(messages);
+    res.json(messagesWithAvatars);
 });
 
 // @desc    Get unread message count

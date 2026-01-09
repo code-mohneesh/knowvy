@@ -38,15 +38,18 @@ export default function VoiceInput({ onResult, disabled }) {
   };
 
   return (
-    <button
-      onClick={startListening}
-      disabled={disabled}
-      className={`px-6 py-3 rounded-full font-semibold transition ${listening
-          ? "bg-red-600"
-          : "bg-blue-600 hover:bg-blue-700"
-        }`}
-    >
-      {listening ? "🎙️ Listening..." : "🎤 Speak"}
-    </button>
+    // <button
+    //   onClick={startListening}
+    //   disabled={disabled}
+    //   className={`px-6 py-3 rounded-full font-semibold transition ${listening
+    //       ? "bg-red-600"
+    //       : "bg-blue-600 hover:bg-blue-700"
+    //     }`}
+    // >
+    //   {listening ? "🎙️ Listening..." : "🎤 Speak"}
+    // </button>
+    <div className="flex justify-center items-center">
+          <h1 className="sm:text-3xl text-2xl font-medium">Coming Soon ...</h1>
+        </div>  
   );
 }

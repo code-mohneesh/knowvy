@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import { Calendar, Video, Clock, User, FileText, Link as LinkIcon } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const AddSession = () => {
     const { user } = useContext(AuthContext);
@@ -45,6 +46,10 @@ const AddSession = () => {
         }
     };
 
+
+
+    // ... inside AddSession component ...
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const config = {
@@ -54,19 +59,24 @@ const AddSession = () => {
             },
         };
 
-        await axios.post('http://localhost:5000/api/sessions', {
-            title,
-            speakerName,
-            date,
-            time,
-            mode,
-            linkOrVenue,
-            description,
-            banner: banner || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
-            speakerImage: speakerImage || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'
-        }, config);
+        try {
+            await axios.post('http://localhost:5000/api/sessions', {
+                title,
+                speakerName,
+                date,
+                time,
+                mode,
+                linkOrVenue,
+                description,
+                banner: banner || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
+                speakerImage: speakerImage || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'
+            }, config);
 
-        navigate('/sessions');
+            toast.success('Session created successfully!');
+            navigate('/sessions');
+        } catch (error) {
+            toast.error('Failed to create session');
+        }
     };
 
     // Check if user has permission - admin can create anything

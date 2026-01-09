@@ -58,7 +58,7 @@ const Sessions = () => {
                                 <h3 className="text-xl font-bold font-display leading-tight mb-2">{session.title}</h3>
                                 <div className="flex items-center gap-2 text-sm text-gray-400">
                                     <div className="w-8 h-8 rounded-full bg-gray-700 overflow-hidden">
-                                        {session.speakerImage && <img src={session.speakerImage} alt="spk" className="w-full h-full object-cover" />}
+                                        {session.speakerImage && <img src={session.speakerImage} alt={session.speakerName} className="w-full h-full object-cover" />}
                                     </div>
                                     <span>{session.speakerName}</span>
                                 </div>

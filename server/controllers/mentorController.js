@@ -24,7 +24,8 @@ const getMentors = asyncHandler(async (req, res) => {
                 experience: profile?.experience || 0,
                 expertise: profile?.expertise || [],
                 specialty: profile?.specialty || '',
-                skills: profile?.skills || []
+                skills: profile?.skills || [],
+                avatar: mentor.avatar || profile?.avatar || '' // Prefer User avatar, fallback to Profile avatar
             };
         })
     );

@@ -6,14 +6,18 @@ import { Calendar, Clock, User, MessageSquare, Video, CheckCircle, XCircle, Aler
 import toast from 'react-hot-toast';
 
 const StudentRequests = () => {
-    const { user } = useContext(AuthContext);
+    const { user, loading: authLoading } = useContext(AuthContext);
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('pending');
 
     useEffect(() => {
-        fetchRequests();
-    }, []);
+        if (!authLoading && user) {
+            fetchRequests();
+        } else if (!authLoading && !user) {
+            setLoading(false); // Auth finished but no user
+        }
+    }, [user, authLoading]);
 
     const fetchRequests = async () => {
         try {
@@ -25,10 +29,14 @@ const StudentRequests = () => {
             setLoading(false);
         } catch (error) {
             console.error('Error fetching requests:', error);
-            toast.error('Failed to load requests');
+            // toast.error('Failed to load requests'); // Suppress error on initial load race
             setLoading(false);
         }
     };
+
+    if (authLoading) {
+        return <div className="text-center mt-20 text-neon-purple">Loading...</div>;
+    }
 
     if (!user || user.userType !== 'student') {
         return (

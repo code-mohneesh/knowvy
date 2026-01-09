@@ -1,5 +1,7 @@
 import { createContext, useState, useEffect, useRef } from "react";
 import axios from "axios";
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext({
   user: null,
@@ -12,10 +14,12 @@ const AuthContext = createContext({
 
 const API_BASE = "http://localhost:5000";
 
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const logoutTimerRef = useRef(null);
+  const navigate = useNavigate();
 
   const getTokenExpiry = (token) => {
     try {
@@ -31,6 +35,8 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     delete axios.defaults.headers.common["Authorization"];
     if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
+    toast.success("Logged out successfully");
+    navigate('/login');
   };
 
   const setupAutoLogout = (token) => {
@@ -43,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     }
     logoutTimerRef.current = setTimeout(() => {
       logout();
-      window.location.href = "/login";
+      navigate('/login');
     }, remainingTime);
   };
 
@@ -100,6 +106,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data } = await axios.post(`${API_BASE}/api/auth/login`, { email, password });
       await fetchProfile(data.token);
+      toast.success(`Welcome back, ${data.name}!`);
     } catch (error) {
       throw error.response?.data?.message || "Login failed";
     }
@@ -112,6 +119,7 @@ export const AuthProvider = ({ children }) => {
         ...Object.assign({}, ...otherFields),
       });
       await fetchProfile(data.token);
+      toast.success("Account created successfully!");
     } catch (error) {
       throw error.response?.data?.message || "Signup failed";
     }

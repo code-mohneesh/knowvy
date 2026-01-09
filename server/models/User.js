@@ -17,26 +17,14 @@ const userSchema = new mongoose.Schema(
         },
         password: {
             type: String,
-            // Password required only if authProvider is local
-            required: function () {
-                return this.authProvider === 'local';
-            },
+            required: true,
         },
         role: {
             type: String,
             enum: ['student', 'mentor', 'organization', 'admin'],
-            required: function () {
-                // If they are local, role is required.
-                // If they are google, role is required only AFTER profile completion.
-                if (this.authProvider === 'local') return true;
-                return this.profileCompleted === true;
-            },
+            required: true,
         },
-        authProvider: {
-            type: String,
-            enum: ['local', 'google'],
-            default: 'local',
-        },
+
         profileCompleted: {
             type: Boolean,
             default: false,
@@ -45,10 +33,7 @@ const userSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
-        googleId: {
-            type: String,
-            sparse: true,
-        },
+
         avatar: {
             type: String,
             default: '',

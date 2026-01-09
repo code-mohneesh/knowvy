@@ -42,6 +42,12 @@ export const requestMentorship = asyncHandler(async (req, res) => {
 // @desc    Get requests for current user (either as student or mentor)
 // @route   GET /api/mentorship/my-requests
 // @access  Private
+import StudentProfile from '../models/profiles/StudentProfile.js';
+import MentorProfile from '../models/profiles/MentorProfile.js';
+
+// @desc    Get requests for current user (either as student or mentor)
+// @route   GET /api/mentorship/my-requests
+// @access  Private
 export const getMyRequests = asyncHandler(async (req, res) => {
     let requests;
     if (req.user.role === 'mentor') {
@@ -53,7 +59,22 @@ export const getMyRequests = asyncHandler(async (req, res) => {
             .populate('mentor', 'name email avatar occupation')
             .sort({ createdAt: -1 });
     }
-    res.json(requests);
+
+    // Patch avatars if missing in User model (Backwards compatibility)
+    const requestsWithAvatars = await Promise.all(requests.map(async (request) => {
+        const r = request.toObject();
+
+        if (req.user.role === 'mentor' && r.student && !r.student.avatar) {
+            const p = await StudentProfile.findOne({ user: r.student._id });
+            if (p?.avatar) r.student.avatar = p.avatar;
+        } else if (req.user.role === 'student' && r.mentor && !r.mentor.avatar) {
+            const p = await MentorProfile.findOne({ user: r.mentor._id });
+            if (p?.avatar) r.mentor.avatar = p.avatar;
+        }
+        return r;
+    }));
+
+    res.json(requestsWithAvatars);
 });
 
 // @desc    Update request status (Accept/Reject)

@@ -5,11 +5,14 @@ import AuthContext from '../context/AuthContext';
 import { Menu, X, User, LogOut, Bell, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const NotificationDropdown = ({ notifications, onMarkRead }) => {
+const NotificationDropdown = ({ notifications, onMarkRead, onRefresh }) => {
     if (notifications.length === 0) {
         return (
             <div className="absolute right-0 top-12 w-80 bg-dark-card border border-white/10 rounded-xl p-4 shadow-2xl z-50 animate-in fade-in zoom-in-95">
                 <p className="text-gray-400 text-center text-sm">No new notifications</p>
+                <div className="text-center mt-2">
+                    <button onClick={onRefresh} className="text-xs text-neon-purple hover:underline">Refresh</button>
+                </div>
             </div>
         );
     }
@@ -18,7 +21,10 @@ const NotificationDropdown = ({ notifications, onMarkRead }) => {
         <div className="absolute right-0 top-12 w-80 bg-dark-card border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 max-h-96 overflow-y-auto">
             <div className="p-3 border-b border-white/10 flex justify-between items-center bg-black/40">
                 <h4 className="text-sm font-bold text-white">Notifications</h4>
-                <button onClick={() => onMarkRead('all')} className="text-xs text-neon-blue hover:underline">Mark all read</button>
+                <div className="flex gap-2">
+                    <button onClick={onRefresh} className="text-xs text-neon-purple hover:underline">Refresh</button>
+                    <button onClick={() => onMarkRead('all')} className="text-xs text-neon-blue hover:underline">Mark all read</button>
+                </div>
             </div>
             {notifications.map((notif) => (
                 <div
@@ -48,23 +54,23 @@ const Navbar = () => {
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
 
-    // Poll for notifications every 30 seconds
+    const fetchNotifications = async () => {
+        if (!user) return;
+        try {
+            const config = { headers: { Authorization: `Bearer ${user.token}` } };
+            const { data } = await axios.get('http://localhost:5000/api/notifications', config);
+            setNotifications(data);
+            setUnreadCount(data.filter(n => !n.read).length);
+        } catch (error) {
+            console.error("Failed to fetch notifications");
+        }
+    };
+
+    // Poll for notifications every 10 seconds
     useEffect(() => {
         if (!user) return;
-
-        const fetchNotifications = async () => {
-            try {
-                const config = { headers: { Authorization: `Bearer ${user.token}` } };
-                const { data } = await axios.get('http://localhost:5000/api/notifications', config);
-                setNotifications(data);
-                setUnreadCount(data.filter(n => !n.read).length);
-            } catch (error) {
-                console.error("Failed to fetch notifications");
-            }
-        };
-
         fetchNotifications();
-        const interval = setInterval(fetchNotifications, 30000);
+        const interval = setInterval(fetchNotifications, 10000);
         return () => clearInterval(interval);
     }, [user]);
 
@@ -161,6 +167,10 @@ const Navbar = () => {
                                 <NotificationDropdown
                                     notifications={notifications}
                                     onMarkRead={handleMarkRead}
+                                    onRefresh={async () => {
+                                        await fetchNotifications();
+                                        toast.success('Notifications refreshed');
+                                    }}
                                 />
                             )}
                         </div>

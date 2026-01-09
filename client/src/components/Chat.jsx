@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { FiSend, FiArrowDown, FiLoader, FiStopCircle } from "react-icons/fi";
+import { div } from "three/tsl";
 
 export default function Chat() {
   const [input, setInput] = useState("");
@@ -127,7 +128,7 @@ export default function Chat() {
   };
 
   return (
-    <div className="h-screen w-full flex flex-col bg-neutral-900 text-white overflow-hidden">
+    <div className="w-full flex flex-col bg-neutral-900 text-white overflow-y-hidden">
       <header className="p-4 bg-neutral-950 border-b border-neutral-800 flex items-center justify-between">
         <h1 className="text-lg font-semibold">Knowvy AI Assistant</h1>
         {loading && (
@@ -142,21 +143,22 @@ export default function Chat() {
         className="flex-1 overflow-y-auto p-6 space-y-4"
         style={{ minHeight: 0 }}
       >
-        {messages.map((msg, i) => (
+        {/* {messages.map((msg, i) => (
           <ChatBubble key={i} role={msg.role} text={msg.content} />
-        ))}
+        ))} */}
+        <ChatBubble />
       </div>
 
-      {showScrollBtn && (
+      {/* {showScrollBtn && (
         <button
           onClick={scrollToBottom}
           className="absolute bottom-24 right-6 p-3 bg-neutral-800 rounded-full shadow-lg hover:bg-neutral-700 transition"
         >
           <FiArrowDown size={20} />
         </button>
-      )}
+      )} */}
 
-      <div className="p-4 bg-neutral-950 border-t border-neutral-800">
+      {/* <div className="p-4 bg-neutral-950 border-t border-neutral-800">
         <div className="flex items-center gap-3 bg-neutral-800 px-4 py-3 rounded-xl">
           <input
             value={input}
@@ -177,7 +179,7 @@ export default function Chat() {
             </button>
           ) : (
             <button
-              disabled={loading}
+              // disabled={loading}
               onClick={handleSend}
               className="p-2 hover:bg-neutral-700 rounded-lg disabled:opacity-50"
             >
@@ -185,45 +187,49 @@ export default function Chat() {
             </button>
           )}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
 
 /* ---- FIXED CHAT BUBBLE ---- */
-function ChatBubble({ role, text }) {
-  const isUser = role === "user";
+// function ChatBubble({role, text}) {
+function ChatBubble() {
+  // const isUser = role === "user";
 
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
-      <div
-        className={`max-w-[80%] p-4 rounded-2xl shadow-lg ${isUser
-          ? "bg-blue-600 text-white"
-          : "bg-neutral-800 text-gray-200 border border-neutral-700"
-          }`}
-      >
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          components={{
-            p: ({ node, ...props }) => (
-              <p className="prose prose-invert max-w-none mb-2" {...props} />
-            ),
-            li: ({ node, ...props }) => (
-              <li className="ml-4 list-disc prose prose-invert" {...props} />
-            ),
-            code: ({ node, inline, ...props }) =>
-              inline ? (
-                <code className="bg-neutral-700 px-1 py-0.5 rounded" {...props} />
-              ) : (
-                <pre className="bg-neutral-800 p-3 rounded-lg overflow-x-auto my-2">
-                  <code {...props} />
-                </pre>
-              ),
-          }}
-        >
-          {text}
-        </ReactMarkdown>
-      </div>
+    // <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+    //   <div
+    //     className={`max-w-[80%] p-4 rounded-2xl shadow-lg ${isUser
+    //       ? "bg-blue-600 text-white"
+    //       : "bg-neutral-800 text-gray-200 border border-neutral-700"
+    //       }`}
+    //   >
+    //     <ReactMarkdown
+    //       remarkPlugins={[remarkGfm]}
+    //       components={{
+    //         p: ({ node, ...props }) => (
+    //           <p className="prose prose-invert max-w-none mb-2" {...props} />
+    //         ),
+    //         li: ({ node, ...props }) => (
+    //           <li className="ml-4 list-disc prose prose-invert" {...props} />
+    //         ),
+    //         code: ({ node, inline, ...props }) =>
+    //           inline ? (
+    //             <code className="bg-neutral-700 px-1 py-0.5 rounded" {...props} />
+    //           ) : (
+    //             <pre className="bg-neutral-800 p-3 rounded-lg overflow-x-auto my-2">
+    //               <code {...props} />
+    //             </pre>
+    //           ),
+    //       }}
+    //     >
+    //       {text}
+    //     </ReactMarkdown>
+    //   </div>
+    // </div>.
+    <div className="flex justify-center items-center h-screen">
+      <h1 className="sm:text-3xl text-2xl font-medium">Coming Soon ...</h1>
     </div>
   );
 }

@@ -11,11 +11,12 @@ const AIAssistant = () => {
     const navigate = useNavigate();
 
     // Redirect to login if not authenticated
-    useEffect(() => {
+    // useEffect(() => {
         if (!user) {
             navigate('/login');
+            return;
         }
-    }, [user, navigate]);
+    // }, [user, navigate]);
     if (mode === 'chat') {
         return (
             <div>

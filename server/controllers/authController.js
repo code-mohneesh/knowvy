@@ -18,11 +18,7 @@ const authUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user) {
-    // If user exists but is a Google user AND has no password
-    if (user.authProvider === 'google' && !user.password) {
-      res.status(401);
-      throw new Error("This account uses Google Login. Please click 'Continue with Google'.");
-    }
+
 
     if (await user.matchPassword(password)) {
       // Legacy support: if role is missing but userType exists (from old docs)
@@ -72,7 +68,7 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     password,
     role,
-    authProvider: 'local',
+
     profileCompleted: true, // Local signup requires all fields immediately
     isApproved: role === 'student' || role === 'admin',
   });
@@ -145,36 +141,10 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-/**
- * @desc    Handle Google OAuth Callback
- * @route   GET /api/auth/google/callback
- * @access  Public
- */
-const googleCallback = asyncHandler(async (req, res) => {
-  // req.user is set by Passport middleware before this controller is called
-  const user = req.user;
 
-  if (!user) {
-    res.status(401);
-    throw new Error("Authentication failed");
-  }
-
-  const token = generateToken(user._id);
-
-  // Redirect to client
-  // Determine redirect URL based on profile completion
-  const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
-  const targetPath = user.profileCompleted ? '/' : '/complete-profile';
-
-  // Construct redirect with token
-  // Use a query param or a temporary code? Using token directly for simplicity as per common SPA patterns, 
-  // though cookies are safer (Phase 7.2 mentions secure cookies in production).
-  // For now, implementing token in query.
-  res.redirect(`${clientUrl}${targetPath}?token=${token}`);
-});
 
 export {
   authUser,
   registerUser,
-  googleCallback,
+
 };

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';
 import { Calendar, Clock, MessageSquare, Phone, User, Mail, FileText, ArrowLeft } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const BookMentor = () => {
     const { id } = useParams();
@@ -66,6 +67,7 @@ const BookMentor = () => {
             }, config);
 
             setSuccess(true);
+            toast.success('Mentor booked successfully!');
             setTimeout(() => {
                 navigate('/mentorship');
             }, 2000);
