@@ -1,9 +1,6 @@
-# Dependencies
 node_modules/
 client/node_modules/
 server/node_modules/
-
-# Environment Variables
 .env
 .env.*
 client/.env*
@@ -30,6 +27,7 @@ lerna-debug.log*
 # Editor & IDE Files
 .vscode/*
 !.vscode/extensions.json
+.idea/
 .idea/
 *.suo
 *.ntvs*
