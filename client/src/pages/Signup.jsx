@@ -13,6 +13,7 @@ import {
   Briefcase,
   MapPin,
   Building,
+  Loader2,
 } from "lucide-react";
 
 /**
@@ -287,9 +288,16 @@ const Signup = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-neon-green text-black font-bold py-3 rounded-lg hover:shadow-lg disabled:opacity-60"
+            className="w-full bg-neon-green text-black font-bold py-3 rounded-lg hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            {loading ? "Creating account..." : "Join Knowvy"}
+            {loading ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                Creating account...
+              </>
+            ) : (
+              'Join Knowvy'
+            )}
           </button>
         </form>
 

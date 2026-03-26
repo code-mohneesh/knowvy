@@ -2,6 +2,7 @@ import { createContext, useState, useEffect, useRef } from "react";
 import axios from "axios";
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { clearAllCache } from '../utils/apiCache';
 
 const AuthContext = createContext({
   user: null,
@@ -35,6 +36,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     delete axios.defaults.headers.common["Authorization"];
     if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
+    clearAllCache(); // wipe in-memory API cache — no stale data after logout
     toast.success("Logged out successfully");
     navigate('/login');
   };

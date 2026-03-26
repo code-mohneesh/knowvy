@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import compression from 'compression'; // gzip — shrinks JSON ~60-70%
 
 
 import connectDB from './config/db.js';
@@ -30,17 +31,40 @@ const app = express();
 /* ======================
    GLOBAL MIDDLEWARE
    ====================== */
+
+/**
+ * DSA Concept Applied → GREEDY ALGORITHM (Huffman-style entropy coding)
+ * gzip uses LZ77 + Huffman coding under the hood — the same principle
+ * behind optimal prefix-free compression trees. Repetitive JSON keys
+ * ("_id", "name", "email" repeated 100× in a list) compress extremely well.
+ * Result: ~70% smaller payloads → faster network transfer → lower LCP.
+ */
+app.use(compression({ level: 6 })); // level 6 = best speed/size trade-off
+
+/**
+ * ETags → Conditional GET pattern (like a hash map lookup)
+ * Express generates an ETag hash of the response body.
+ * Browser sends `If-None-Match` header on 2nd request.
+ * If data unchanged → server returns 304 (Not Modified) with NO body.
+ * This is O(1) cache hit — zero bytes transferred for unchanged data.
+ */
+app.set('etag', 'strong');
+
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
-
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Serve static files from uploads directory
+// Serve static files from uploads directory — with aggressive caching
 import path from 'path';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Cache uploaded images for 7 days — images don't change, so browser reuses them
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+  maxAge: '7d',
+  etag: true,
+  lastModified: true,
+}));
 
 
 

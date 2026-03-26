@@ -1,22 +1,27 @@
 import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
-import { Mail, Lock, AlertTriangle } from 'lucide-react';
+import { Mail, Lock, AlertTriangle, Loader2 } from 'lucide-react';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
+        setLoading(true);
         try {
             await login(email, password);
             navigate('/');
         } catch (err) {
-            setError(err.response?.data?.message || 'Login failed');
+            setError(err.response?.data?.message || err || 'Login failed');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -43,6 +48,7 @@ const Login = () => {
                                 className="w-full bg-dark-bg border border-white/10 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:border-neon-blue transition-colors text-white"
                                 placeholder="name@example.com"
                                 required
+                                disabled={loading}
                             />
                         </div>
                     </div>
@@ -58,16 +64,26 @@ const Login = () => {
                                 className="w-full bg-dark-bg border border-white/10 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:border-neon-blue transition-colors text-white"
                                 placeholder="••••••••"
                                 required
+                                disabled={loading}
                             />
                         </div>
                     </div>
 
-                    <button type="submit" className="w-full bg-neon-blue text-black font-bold py-3 rounded-lg hover:shadow-[0_0_20px_rgba(0,255,255,0.5)] transition-all mt-2">
-                        Login
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full bg-neon-blue text-black font-bold py-3 rounded-lg hover:shadow-[0_0_20px_rgba(0,255,255,0.5)] transition-all mt-2 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                    >
+                        {loading ? (
+                            <>
+                                <Loader2 size={18} className="animate-spin" />
+                                Logging in...
+                            </>
+                        ) : (
+                            'Login'
+                        )}
                     </button>
                 </form>
-
-
 
                 <p className="text-center text-gray-400 mt-6">
                     Don't have an account? <Link to="/signup" className="text-neon-green hover:underline">Sign up</Link>
@@ -78,3 +94,5 @@ const Login = () => {
 };
 
 export default Login;
+
+

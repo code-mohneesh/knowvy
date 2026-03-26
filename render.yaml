@@ -1,0 +1,24 @@
+services:
+  # Frontend: Static Site
+  - type: static
+    name: knowvy-frontend
+    env: static
+    buildCommand: cd client && npm install && npm run build
+    staticPublishPath: client/dist
+    routes:
+      # SPA Rewrite: reroute all paths to index.html to allow React Router to handle them
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # Backend: Web Service
+  - type: web
+    name: knowvy-backend
+    env: node
+    plan: free
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - fromGroup: knowvy-secrets # Assuming you have a secret group in Render
