@@ -7,16 +7,17 @@ import VoiceInterview from './VoiceInterview';
 
 const AIAssistant = () => {
     const [mode, setMode] = useState(null); // null, 'chat', or 'voice'
-    const { user } = useContext(AuthContext);
+    const { user, loading } = useContext(AuthContext);
     const navigate = useNavigate();
 
+    // Show loading state while Auth is initializing
+    if (loading) return <div className="text-center mt-20 text-neon-blue">Loading AI Assistant...</div>;
+
     // Redirect to login if not authenticated
-    // useEffect(() => {
-        if (!user) {
-            navigate('/login');
-            return;
-        }
-    // }, [user, navigate]);
+    if (!user) {
+        navigate('/login');
+        return null;
+    }
     if (mode === 'chat') {
         return (
             <div>

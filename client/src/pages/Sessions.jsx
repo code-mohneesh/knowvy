@@ -6,6 +6,7 @@ import { Calendar, Clock, Video, MapPin, Search } from 'lucide-react';
 
 const Sessions = () => {
     const [sessions, setSessions] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all'); // all, online, offline
     const { user } = useContext(AuthContext);
 
@@ -13,6 +14,7 @@ const Sessions = () => {
         const fetchSessions = async () => {
             const { data } = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/sessions`);
             setSessions(data);
+            setLoading(false);
         };
         fetchSessions();
     }, []);
@@ -20,6 +22,8 @@ const Sessions = () => {
     const filteredSessions = sessions.filter(session =>
         filter === 'all' ? true : session.mode === filter
     );
+
+    if (loading) return <div className="text-center mt-20 text-neon-pink">Loading Sessions...</div>;
 
     return (
         <div className="space-y-8">
